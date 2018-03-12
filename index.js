@@ -15,16 +15,16 @@ function parseUrl(url) {
         parts = JSON.parse(JSON.stringify(url));
     }
     else {
-        var match = url.toLowerCase().match(/^([0-9A-Za-z]+[:])[/][/]([^@/]+@)?([^:/]+)([:][0-9]+)?([/].*)?$/);
+        var match = url.match(/^([0-9A-Za-z]+[:])[/][/]([^@/]+@)?([^:/]+)([:][0-9]+)?([/].*)?$/);
         if (!match)
             return null;
         parts = {
             href: url,
-            protocol: match[1],
-            host: match[3] + (match[4] ? match[4] : ''),
-            hostname: match[3],
+            protocol: match[1].toLowerCase(),
+            host: match[3].toLowerCase() + (match[4] ? match[4] : ''),
+            hostname: match[3].toLowerCase(),
             port: (match[4] ? match[4].substr(1) : ''),
-            pathname: match[5],
+            pathname: match[5] || '',
         };
     }
 
