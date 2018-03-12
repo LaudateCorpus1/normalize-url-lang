@@ -1,0 +1,19 @@
+{
+  "name": "normalize-url-lang",
+  "version": "1.0.0",
+  "description": "extract public suffix and non-locale path parts out of a URL",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine",
+    "install": "node bin/installSuffixData.js"
+  },
+  "author": "Pavel Studeny",
+  "license": "Avast",
+  "dependencies": {
+    "node-fetch": "^2.1.1",
+    "punycode": "^2.1.0"
+  },
+  "devDependencies": {
+    "jasmine": "^3.1.0"
+  }
+}
