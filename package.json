@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jasmine",
-    "install": "node bin/installSuffixData.js"
+    "install": "node bin/installData.js"
   },
   "author": "Pavel Studeny",
   "license": "Avast",
@@ -14,6 +14,8 @@
     "punycode": "^2.1.0"
   },
   "devDependencies": {
-    "jasmine": "^3.1.0"
+    "iso-639-3": "^1.0.1",
+    "jasmine": "^3.1.0",
+    "lcid": "^1.0.0"
   }
 }
