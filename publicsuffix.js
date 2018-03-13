@@ -1,37 +1,9 @@
 'use strict';
 
 var punycode = require('punycode');
+var rcompare = require('./search').rcompare;
 
 var DB_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
-
-function wildcard(w) {
-    return function rcompare(s1, s2) {
-        var i1 = s1.length;
-        var i2 = s2.length;
-
-        while (i1 > 0 && i2 > 0) {
-            --i1; --i2;
-
-            if (s1[i1] === w || s2[i2] === w)
-                return 0;
-
-            if (s1[i1] > s2[i2])
-                return 1;
-            if (s1[i1] < s2[i2])
-                return -1;
-        }
-
-        if (i1 < i2)
-            return -1;
-        if (i1 > i2)
-            return 1;
-        
-        return 0;
-    };
-}
-
-var rcompare = wildcard(null);
-rcompare.wildcard = wildcard;
 
 
 function parse(suffixText)  {
@@ -65,7 +37,6 @@ function load(node_fetch) {
 }
 
 module.exports = {
-    rcompare: rcompare,
     parse: parse,
     load: load
 };
