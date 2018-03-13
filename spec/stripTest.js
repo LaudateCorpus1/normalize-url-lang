@@ -151,3 +151,12 @@ describe('strip language codes from path', function () {
         expect(stripPath('/en%2DUS')).toBe('');
     });
 });
+
+describe('normalizeUrl', function () {
+    var { normalizeUrl } = require('../index');
+    var suffixData = require('../publicsuffix.json');
+
+    it('removes subdomain, languages, queries and fragments', function () {
+        expect(normalizeUrl(suffixData, 'https://www.example.com/de/de-ch/index.html;jsessionid=abcd')).toBe('https://example.com/index.html');
+    })
+});

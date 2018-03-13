@@ -124,8 +124,15 @@ function stripPath(path) {
     return parts.join('/');
 }
 
+function normalizeUrl(suffixData, url) {
+    var loc = parseUrl(url);
+
+    return loc.protocol + '//' + stripDomain(suffixData, loc.hostname) + (loc.port ? (':' + loc.port) : '') + stripPath(loc.pathname);
+}
+
 module.exports = {
     parseUrl: parseUrl,
     stripDomain: stripDomain,
-    stripPath: stripPath
+    stripPath: stripPath,
+    normalizeUrl: normalizeUrl
 };
