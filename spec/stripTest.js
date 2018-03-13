@@ -103,3 +103,51 @@ describe('strip domain on real data', function () {
         }
     });
 });
+
+describe('strip language codes from path', function () {
+    var { stripPath } = require('../index');
+
+    it('keeps path with no languages as is', function () {
+        expect(stripPath('/hello/world')).toBe('/hello/world');
+    });
+
+    it('ignores partial matches', function () {
+        expect(stripPath('/hello.doc')).toBe('/hello.doc');
+    });
+
+    it('keeps root path as is', function () {
+        expect(stripPath('/')).toBe('/');
+    });
+
+    it('keeps empty path as is', function () {
+        expect(stripPath('')).toBe('');
+    });
+
+    it('removes 2 char codes', function () {
+        expect(stripPath('/en/')).toBe('/');
+    });
+
+    it('removes 3 char codes', function () {
+        expect(stripPath('/eng/')).toBe('/');
+    });
+
+    it('removes ietf char codes with a dash', function () {
+        expect(stripPath('/en-US/')).toBe('/');
+    });
+
+    it('removes ietf char codes with an underscore', function () {
+        expect(stripPath('/en_US/')).toBe('/');
+    });
+
+    it('removes ietf char codes with no delimiter', function () {
+        expect(stripPath('/enus/')).toBe('/');
+    });
+
+    it('removes multiple char codes', function () {
+        expect(stripPath('/hello/en/en-US/index.html')).toBe('/hello/index.html');
+    });
+
+    it('removes url-encoded char codes', function () {
+        expect(stripPath('/en%2DUS')).toBe('');
+    });
+});

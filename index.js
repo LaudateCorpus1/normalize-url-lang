@@ -111,7 +111,21 @@ function stripDomain(suffixData, domain) {
     return domainParts.slice(domainParts.length - max).join('.');
 }
 
+var langcodes = require('./langcodes.json');
+
+function stripPath(path) {
+    var parts = decodeURIComponent(path).split('/');
+    var partslc = decodeURIComponent(path).toLowerCase().split('/');
+
+    for (var i = partslc.length - 1; i >= 0; --i) {
+        if (langcodes[partslc[i]])
+            parts.splice(i, 1);
+    }
+    return parts.join('/');
+}
+
 module.exports = {
     parseUrl: parseUrl,
-    stripDomain: stripDomain
+    stripDomain: stripDomain,
+    stripPath: stripPath
 };
