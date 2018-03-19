@@ -6,16 +6,16 @@ Extract a unique and language-independent part of a URL, e.g.
 ```
 let { normalizeUrl } = require('normalize-url-lang');
 
-normalizeUrl(suffixData, 'https://www.avast.com/en-US/index.html?q=avast');
+normalizeUrl(publicSuffixData, 'https://www.avast.com/en-US/index.html?q=avast');
  -> https://avast.com/index.html
 ```
 
 Stripped parts can be replaced by a wildcard and use for URL comparison:
 
 ```
-let { matchUrl } = require('normalize-url-lang/url');
+let { matchUrl } = require('normalize-url-lang/match');
 
-normalizeUrl(suffixData, 'https://www.avast.com/en-US/index.html?q=avast', '*');
+normalizeUrl(publicSuffixData, 'https://www.avast.com/en-US/index.html?q=avast', '*');
  -> https://*avast.com/*/index.html
 
 matchUrl('https://avast.com/de-DE/index.html', 'https://*avast.com/*/index.html', '*');
