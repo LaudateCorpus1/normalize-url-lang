@@ -128,7 +128,7 @@ describe('strip language codes from path', function () {
     });
 
     it('removes 3 char codes', function () {
-        expect(stripPath('/eng/')).toBe('/');
+        expect(stripPath('/bbc/')).toBe('/');
     });
 
     it('removes ietf char codes with a dash', function () {
@@ -137,10 +137,6 @@ describe('strip language codes from path', function () {
 
     it('removes ietf char codes with an underscore', function () {
         expect(stripPath('/en_US/')).toBe('/');
-    });
-
-    it('removes ietf char codes with no delimiter', function () {
-        expect(stripPath('/enus/')).toBe('/');
     });
 
     it('removes multiple char codes', function () {
