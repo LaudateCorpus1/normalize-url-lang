@@ -1,5 +1,5 @@
 describe('url parsing', function () {
-    var { parseUrl } = require('../index');
+    var { parseUrl } = require('../url');
 
     it('parses valid url into components', function () {
         expect(parseUrl('http://user:password@example.com:8080/path?query#fragment')).toEqual(jasmine.objectContaining({

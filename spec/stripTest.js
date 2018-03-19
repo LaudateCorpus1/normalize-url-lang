@@ -37,7 +37,8 @@ describe('strip domain by publicsuffix.org', function () {
 
 describe('strip domain on real data', function () {
     var suffixData = require('../publicsuffix.json');
-    var { parseUrl, stripDomain } = require('../index');
+    var { stripDomain } = require('../index');
+    var { parseUrl } = require('../url');
     var urls = {
         "http://company.localdomain/index.html": "company.localdomain",
         "http://m.facebook.com": "facebook.com",
@@ -154,5 +155,34 @@ describe('normalizeUrl', function () {
 
     it('removes subdomain, languages, queries and fragments', function () {
         expect(normalizeUrl(suffixData, 'https://www.example.com/de/de-ch/index.html;jsessionid=abcd')).toBe('https://example.com/index.html');
-    })
+    });
+
+    it('replaces subdomain and languages by a wildcard', function () {
+        expect(normalizeUrl(suffixData, 'https://www.abc.example.com/de/de-ch/index.html;jsessionid=abcd', '*')).toBe('https://*example.com/*/*/index.html');
+    });
+});
+
+describe('matchUrl', function () {
+    var { matchUrl } = require('../match');
+    var parseUrl = require('../url').parseUrl;
+
+    it('compares exact domain+path match', function () {
+        expect(matchUrl('https://www.abc.example.com/de/de-ch/index.html;jsessionid=abcd', 'https://www.abc.example.com/de/de-ch/index.html')).toBe(true);
+    });
+
+    it('compares wildcard domain+path match', function () {
+        expect(matchUrl('https://www.abc.example.com/de/de-ch/index.html;jsessionid=abcd', 'https://*example.com/*/*/index.html')).toBe(true);
+    });
+
+    it('compares window.location-like url', function () {
+        expect(matchUrl(parseUrl('https://www.abc.example.com/de/de-ch/index.html;jsessionid=abcd'), 'https://*example.com/*/*/index.html')).toBe(true);
+    });
+
+    it('matches no chacater with a wildcard', function () {
+        expect(matchUrl('https://example.com/de/de-ch/index.html', 'https://*example.com/*/*/index.html')).toBe(true);
+    });
+
+    it('substrings of domain part do not match', function () {
+        expect(matchUrl('https://mein-example.com/de/de-ch/index.html', 'https://*example.com/*/*/index.html')).toBe(false);
+    });
 });
