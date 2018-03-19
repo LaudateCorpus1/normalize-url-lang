@@ -26,7 +26,7 @@ Promise.all([
     load(fetch)
         .then(function (suffixData) {
             return new Promise(function (resolve, reject) {
-                fs.writeFileSync(path.join(__dirname, '..', 'publicsuffix.json'), JSON.stringify(suffixData, null, 2), {}, function (err) {
+                fs.writeFileSync(path.join(__dirname, '..', 'publicsuffix.json'), JSON.stringify(suffixData), {}, function (err) {
                     if (err) {
                         reject(err);
                     }
@@ -57,12 +57,12 @@ function loadLangCodes () {
             var lang = langs.iterateNext();
             while (lang) {
                 var type = lang.getAttribute('type').toLowerCase();
-                codes[type] = true;
+                codes[type] = 1;
                 if (lang.hasAttribute('territories')) {
                     var territories = lang.getAttribute('territories').toLowerCase().split(' ');
                     territories.reduce(function (o, t) {
-                        o[type + '-' + t] = true;
-                        o[type + '_' + t] = true;
+                        o[type + '-' + t] = 1;
+                        o[type + '_' + t] = 1;
                         return o;
                     }, codes);
                 }
@@ -74,13 +74,13 @@ function loadLangCodes () {
             var group = territoryGroups.iterateNext();
             while (group) {
                 var parent = group.getAttribute('parent').toLowerCase();
-                codes[parent.replace(/_/g, '-')] = true;
-                codes[parent.replace(/-/g, '_')] = true;
+                codes[parent.replace(/_/g, '-')] = 1;
+                codes[parent.replace(/-/g, '_')] = 1;
                 group = territoryGroups.iterateNext();                
             }
 
             return new Promise(function (resolve, reject) {
-                fs.writeFileSync(path.join(__dirname, '..', 'langcodes.json'), JSON.stringify(codes, null, 2), {}, function (err) {
+                fs.writeFileSync(path.join(__dirname, '..', 'langcodes.json'), JSON.stringify(codes), {}, function (err) {
                     if (err) {
                         reject(err);
                     }
