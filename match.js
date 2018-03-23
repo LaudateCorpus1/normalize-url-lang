@@ -2,6 +2,23 @@
 
 var parseUrl = require('./url').parseUrl;
 
+function matchPath(pathName, wildcardPathName, wildcard) {
+    var path = pathName.split('/');
+    var wildcardPath = wildcardPathName.split('/');
+
+    if (path.length != wildcardPath.length) {
+        return false;
+    }
+
+    for (var i = path.length - 1; i >= 0; --i) {
+        if (wildcardPath[i] != wildcard && path[i] != wildcardPath[i])
+            return false;
+    }
+
+    return true;
+
+}
+
 function matchUrl(url, wildcardUrl, wildcard) {
     if (typeof wildcard === 'undefined') {
         wildcard = '*';
@@ -22,21 +39,10 @@ function matchUrl(url, wildcardUrl, wildcard) {
         return false;
     }
 
-    var path = loc.pathname.split('/');
-    var wpath = wloc.pathname.split('/');
-
-    if (path.length != wpath.length) {
-        return false;
-    }
-
-    for (var i = path.length - 1; i >= 0; --i) {
-        if (wpath[i] != validCharWildcard && path[i] != wpath[i])
-            return false;
-    }
-
-    return true;
+    return matchPath(loc.pathname, wloc.pathname, validCharWildcard);
 }
 
 module.exports = {
+    matchPath: matchPath,
     matchUrl: matchUrl
 };
