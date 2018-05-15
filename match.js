@@ -2,16 +2,31 @@
 
 var parseUrl = require('./url').parseUrl;
 
-function matchPath(pathName, wildcardPathName, wildcard) {
-    var path = pathName.split('/');
-    var wildcardPath = wildcardPathName.split('/');
+function wildcardToRegex(str, wildcard) {
+    return new RegExp('^'
+        + str.split(wildcard)  // split to non-wildcard parts
+            .map(function (p) {
+                return p.split('')  // split to individual characters
+                    .map(function (c) {
+                        return '\\u{' + c.codePointAt(0).toString(16) + '}';  // convert characters to a single-character unicode match to avoid any other escaping problems
+                    })
+                    .join('');  // join the individual charater matches back
+                })
+                .join('.*')  // return .* in-between instead of a wilcard
+        + '$', 'u');
+}
 
-    if (path.length != wildcardPath.length) {
+function matchPath(pathName, wildcardPathName, wildcard) {
+    var pathParts = pathName.split('/');
+    var wildcardPathParts = wildcardPathName.split('/');
+
+    if (pathParts.length != wildcardPathParts.length) {
         return false;
     }
 
-    for (var i = path.length - 1; i >= 0; --i) {
-        if (wildcardPath[i] != wildcard && path[i] != wildcardPath[i])
+    for (var i = pathParts.length - 1; i >= 0; --i) {
+        var re = wildcardToRegex(wildcardPathParts[i], wildcard);
+        if (!re.test(pathParts[i]))
             return false;
     }
 

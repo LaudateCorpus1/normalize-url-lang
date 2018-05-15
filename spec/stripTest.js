@@ -185,4 +185,20 @@ describe('matchUrl', function () {
     it('substrings of domain part do not match', function () {
         expect(matchUrl('https://mein-example.com/de/de-ch/index.html', 'https://*example.com/*/*/index.html')).toBe(false);
     });
+
+    it('accepts wildcards in the middle of a path part', function () {
+        expect(matchUrl('https://example.com/index.pt-BR.html', 'https://example.com/index.*.html')).toBe(true);
+    });
+
+    it('accepts multiple wildcards in a path part', function () {
+        expect(matchUrl('https://example.com/index.pt-BR.html', 'https://example.com/index.*-*.html')).toBe(true);
+    });
+
+    it('path wildcards match zero-length parts', function () {
+        expect(matchUrl('https://example.com/index.html/', 'https://example.com/index*.html/*')).toBe(true);
+    });
+
+    it('path wildcards do not cross part boundaries', function () {
+        expect(matchUrl('https://example.com/a/b/index.html', 'https://example.com/*/index.html')).toBe(false);
+    });
 });
