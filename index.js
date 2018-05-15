@@ -74,6 +74,7 @@ function stripDomain(suffixData, domain, wildcard) {
 }
 
 var langcodes = require('./langcodes.json');
+var TWO_CHAR_CODE = /^[a-z]{2}([-_]?[a-z]{2})?$/;  // any two characters or pt-pt or pt_br
 
 function stripPath(path, wildcard) {
     var parts = decodeURIComponent(path).split('/');
@@ -81,13 +82,13 @@ function stripPath(path, wildcard) {
 
     if (typeof wildcard === 'string') {
         for (var i = partslc.length - 1; i >= 0; --i) {
-            if (langcodes[partslc[i]])
+            if (partslc[i].match(TWO_CHAR_CODE) || langcodes[partslc[i]])
                 parts[i] = wildcard;
         }
     }
     else {
         for (var i = partslc.length - 1; i >= 0; --i) {
-            if (langcodes[partslc[i]])
+            if (partslc[i].match(TWO_CHAR_CODE) || langcodes[partslc[i]])
                 parts.splice(i, 1);
         }
     }

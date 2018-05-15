@@ -48,6 +48,7 @@ function loadLangCodes () {
             return resp.ok ? resp.text() : Promise.reject(DB_URL + ' ' + resp.status + ' ' + resp.statusText);
         })
         .then(function (text) {
+            var TWO_CHAR_CODE = /^[a-z]{2}([-_]?[a-z]{2})?$/;  // any two characters or pt-pt or pt_br
             var codes = {};
             var domParser = new DOMParser();
             var xml = domParser.parseFromString(text);
@@ -57,10 +58,15 @@ function loadLangCodes () {
             var lang = langs.iterateNext();
             while (lang) {
                 var type = lang.getAttribute('type').toLowerCase();
-                codes[type] = 1;
+                if (!type.match(TWO_CHAR_CODE)) {
+                    codes[type] = 1;
+                }
                 if (lang.hasAttribute('territories')) {
                     var territories = lang.getAttribute('territories').toLowerCase().split(' ');
                     territories.reduce(function (o, t) {
+                        if ((type + '-' + t).match(TWO_CHAR_CODE)) {
+                            return o;
+                        }
                         o[type + '-' + t] = 1;
                         o[type + '_' + t] = 1;
                         return o;
@@ -74,8 +80,10 @@ function loadLangCodes () {
             var group = territoryGroups.iterateNext();
             while (group) {
                 var parent = group.getAttribute('parent').toLowerCase();
-                codes[parent.replace(/_/g, '-')] = 1;
-                codes[parent.replace(/-/g, '_')] = 1;
+                if (!parent.replace(/_/g, '-').match(TWO_CHAR_CODE)) {
+                    codes[parent.replace(/_/g, '-')] = 1;
+                    codes[parent.replace(/-/g, '_')] = 1;
+                }
                 group = territoryGroups.iterateNext();                
             }
 
