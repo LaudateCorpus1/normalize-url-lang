@@ -33,6 +33,30 @@ describe('strip domain by publicsuffix.org', function () {
         };
         expect(stripDomain(suffixData, 'www.wordpress.org')).toBe('www.wordpress.org');
     });
+
+    it('recognizes wildcards in suffix data', function () {
+        var suffixData = {
+            match: [ 'au', '*.uk', 'zw' ],
+            negMatch: []
+        };
+        expect(stripDomain(suffixData, 'www.avast.facebook.co.uk')).toBe('facebook.co.uk')
+    });
+
+    it('prefers the longest applicable wildcard', function () {
+        var suffixData = {
+            match: [ '*', '*.uk' ],
+            negMatch: []
+        };
+        expect(stripDomain(suffixData, 'www.avast.facebook.co.uk')).toBe('facebook.co.uk')
+    });
+
+    it('ignores the unapplicable wildcard', function () {
+        var suffixData = {
+            match: [ '*', '*.uk' ],
+            negMatch: []
+        };
+        expect(stripDomain(suffixData, 'www.avast.facebook.co.nz')).toBe('co.nz')
+    });
 });
 
 describe('strip domain on real data', function () {

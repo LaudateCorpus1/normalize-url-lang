@@ -1,7 +1,7 @@
 'use strict';
 
 var search = require('./search').search;
-var rcompare = require('./search').rcompare;
+var rcompare = require('./search').rcompare.wildcard('*');
 var parseUrl = require('./url').parseUrl;
 
 function lastPartCompare(suffix, domainParts) {
