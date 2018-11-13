@@ -3,17 +3,36 @@
 var parseUrl = require('./url').parseUrl;
 
 function wildcardToRegex(str, wildcard) {
-    return new RegExp('^'
-        + str.split(wildcard)  // split to non-wildcard parts
-            .map(function (p) {
-                return p.split('')  // split to individual characters
-                    .map(function (c) {
-                        return '\\u{' + c.codePointAt(0).toString(16) + '}';  // convert characters to a single-character unicode match to avoid any other escaping problems
+    try {
+        return new RegExp('^'
+            + str.split(wildcard)  // split to non-wildcard parts
+                .map(function (p) {
+                    return p.split('')  // split to individual characters
+                        .map(function (c) {
+                            return '\\u{' + c.codePointAt(0).toString(16) + '}';  // convert characters to a single-character unicode match to avoid any other escaping problems
+                        })
+                        .join('');  // join the individual charater matches back
                     })
-                    .join('');  // join the individual charater matches back
-                })
-                .join('.*')  // return .* in-between instead of a wilcard
-        + '$', 'u');
+                    .join('.*')  // return .* in-between instead of a wilcard
+            + '$', 'u');
+    }
+    catch (ex) {  // chrome 49 does not support the 'u' flag
+        try {
+            return new RegExp('^'
+                + str.split(wildcard)  // split to non-wildcard parts
+                    .map(function (p) {
+                        return p.split('')  // split to individual characters
+                            .map(function (c) {
+                                return (c === '[' || c === ']' || c === '^') ? ('\\' + c) : '[' + c + ']';
+                            })
+                            .join('');  // join the individual charater matches back
+                        })
+                        .join('.*')  // return .* in-between instead of a wilcard
+                + '$', 'u');
+        } catch (ex49) {
+            return /[]/;
+        }
+    }
 }
 
 function matchPath(pathName, wildcardPathName, wildcard) {
