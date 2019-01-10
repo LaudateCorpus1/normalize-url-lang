@@ -2,7 +2,7 @@
 
 var punycode = require('punycode');
 
-var SUSPICIOUS_PATH_CHARS = /[!$&'(),;=:@?#]/;
+var PATH_TERMINATION_CHARS = /[#?;]/;
 
 /**
  * split url to components also known from window.location and strip some extra parts, such as ; (often used as a session id delimiter)
@@ -31,7 +31,7 @@ function parseUrl(url) {
     }
 
     if (parts.pathname) {
-        var i = parts.pathname.search(SUSPICIOUS_PATH_CHARS);
+        var i = parts.pathname.search(PATH_TERMINATION_CHARS);
         if (i != -1) {
             parts.pathname = parts.pathname.substr(0, i);
         }
