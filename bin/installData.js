@@ -39,7 +39,7 @@ Promise.all([
         loadLangCodes() ])
     .catch(function (ex) {
         console.error(ex);
-        process.exit(1);
+        process.exit(0);
     });
 
 function loadLangCodes () {
@@ -56,6 +56,9 @@ function loadLangCodes () {
             var langs = xml.evaluate('languageData/language[not(@alt="secondary")]', xml.documentElement, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
 
             var lang = langs.iterateNext();
+            if (!lang) {
+                return Promise.reject('Cannot parse supplementalData.xml');
+            }
             while (lang) {
                 var type = lang.getAttribute('type').toLowerCase();
                 if (!type.match(TWO_CHAR_CODE)) {
@@ -78,6 +81,9 @@ function loadLangCodes () {
 
             var territoryGroups = xml.evaluate('parentLocales/parentLocale[not(@parent="root")]', xml.documentElement, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
             var group = territoryGroups.iterateNext();
+            if (!group) {
+                return Promise.reject('Cannot parse supplementalData.xml');
+            }
             while (group) {
                 var parent = group.getAttribute('parent').toLowerCase();
                 if (!parent.replace(/_/g, '-').match(TWO_CHAR_CODE)) {
